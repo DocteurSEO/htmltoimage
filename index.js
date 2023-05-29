@@ -7,8 +7,13 @@ app.use(express.json());
 let page;
 
 async function getBrowserPage() {
+
   const browser = await puppeteer.launch({
-    headless: true
+    headless: true,
+    args: ['--no-sandbox', '--disable-setuid-sandbox'],
+    ignoreDefaultArgs: ['--disable-extensions']
+
+
   });
   return browser.newPage();
 }
