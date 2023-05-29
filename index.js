@@ -9,7 +9,11 @@ let browser;
 async function getBrowserInstance() {
   if (!browser) {
     browser = await puppeteer.launch({
-      headless: true
+      headless: true,
+      args: ['--no-sandbox', '--disable-setuid-sandbox'],
+    ignoreDefaultArgs: ['--disable-extensions']
+
+
     });
   }
   return browser;
