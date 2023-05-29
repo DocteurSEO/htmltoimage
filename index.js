@@ -4,34 +4,24 @@ const puppeteer = require("puppeteer");
 const app = express();
 app.use(express.json());
 
-let page;
+let browser;
 
-async function getBrowserPage() {
-
-  const browser = await puppeteer.launch({
-    headless: true,
-    args: ['--no-sandbox', '--disable-setuid-sandbox'],
-    ignoreDefaultArgs: ['--disable-extensions']
-
-
-  });
-  return browser.newPage();
+async function getBrowserInstance() {
+  if (!browser) {
+    browser = await puppeteer.launch({
+      headless: true
+    });
+  }
+  return browser;
 }
 
-app.get("/", async (req, res) => {
-    res.send("Hello World!");
-});
 app.post("/img", async (req, res) => {
-   
-
   const width = req.body.width || 800;
   const height = req.body.height || 600;
 
-
   try {
-    if (!page) {
-      page = await getBrowserPage();
-    }
+    const browser = await getBrowserInstance();
+    const page = await browser.newPage();
     
     await page.setViewport({width, height});
 
@@ -48,6 +38,8 @@ app.post("/img", async (req, res) => {
     const imgBuffer = await page.screenshot({
       fullPage: true,
     });
+
+    await page.close();
 
     res.set("Content-Type", "image/png");
     res.status(200).send(imgBuffer);
