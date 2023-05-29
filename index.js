@@ -13,15 +13,15 @@ async function getBrowserPage() {
   return browser.newPage();
 }
 
+app.get("/", async (req, res) => {
+    res.send("Hello World!");
+});
 app.post("/img", async (req, res) => {
-    // convert to number
-
-;
+   
 
   const width = req.body.width || 800;
   const height = req.body.height || 600;
 
-  // con
 
   try {
     if (!page) {
